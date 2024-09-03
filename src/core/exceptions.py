@@ -1,23 +1,26 @@
 
-from fastapi import status
+from fastapi import status, HTTPException
 
 
-class ValidationError(Exception):
+class ValidationError(HTTPException):
     def __init__(self, error_msg: str):
-        super().__init__(error_msg)
-        self.status_code = status.HTTP_400_BAD_REQUEST
-        self.error_msg = error_msg
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_msg
+        )
 
 
-class AlreadyExistsError(Exception):
+class AlreadyExistsError(HTTPException):
     def __init__(self, error_msg: str):
-        super().__init__(error_msg)
-        self.status_code = status.HTTP_409_CONFLICT
-        self.error_msg = error_msg
+        super().__init__(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=error_msg
+        )
 
 
-class NotFoundError(Exception):
+class NotFoundError(HTTPException):
     def __init__(self, error_msg: str):
-        super().__init__(error_msg)
-        self.status_code = status.HTTP_404_NOT_FOUND
-        self.error_msg = error_msg
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=error_msg
+        )
