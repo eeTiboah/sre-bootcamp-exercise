@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
+from typing import Optional
 
 class StudentResponse(BaseModel):
     id: int
@@ -13,9 +14,9 @@ class StudentResponse(BaseModel):
 class StudentInput(BaseModel):
     first_name: str = Field(...)
     last_name: str = Field(...)
-    email: str = Field(...)
+    email: EmailStr = Field(...)
+
 
 class StudentUpdate(BaseModel):
-    first_name: str
-    last_name: str
-    email: str
+    first_name: Optional[str] = Field(default=None)
+    last_name: Optional[str] = Field(default=None)

@@ -6,7 +6,8 @@ class EnvConfig(BaseSettings):
     DB_USER: str = "NOT THE REAL DB USER"
     DB_PASSWORD: str = "NOT THE REAL DB PASSWORD"
     DB_PORT: str = "DB PORT"
-    DATABASE_URL: str = "db url"
+    DATABASE_URL: str = "DB URL"
+    DB_HOST: str = "DB HOST"
 
     class Config:
         env_file = ".env"
