@@ -1,22 +1,50 @@
+DOCKER_COMPOSE = docker compose
+DOCKER = docker
+IMAGE_NAME = sre-bootcamp-api
+IMAGE_TAG = 1.0.0
+MIGRATION_MARKER = .migrations-applied
 
-SHELL := /bin/bash
+start-db:
+	@$(DOCKER_COMPOSE) up -d db
+	@echo "Database container started."
 
-define setup_venv
-	python -m venv --clear venv \
-	&& source /venv/bin/activate \
-	&& pip install pip pip-tools \
-	&& pip install --upgrade setuptools wheel
-endef
+migrate-db:
+	@$(DOCKER_COMPOSE) run --rm app alembic upgrade head
+	@touch $(MIGRATION_MARKER)
+	@echo "Database migrations applied."
 
-define activate_venv
-	source venv/bin/activate
-endef
+build-api:
+	@$(DOCKER) build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	@echo "REST API Docker image built and tagged as $(IMAGE_NAME):$(IMAGE_TAG)."
 
-s.setup_venv:
-	$(call setup_venv)
+run-api:
+ifeq ($(wildcard $(MIGRATION_MARKER)),)
+	@echo "Migrations not applied. Running migrations first..."
+	@$(DOCKER_COMPOSE) run --rm app alembic upgrade head
+	@touch $(MIGRATION_MARKER)
+else
+	@echo "Migrations already applied. Skipping Alembic upgrade."
+endif
+	@$(DOCKER_COMPOSE) up -d app
+	@echo "REST API container started."
 
-s.venv:
-	$(call activate_venv)
+start: start-db migrate-db run-api
+	@echo "Containers up and running"
 
-s.start:
-	uvicorn src.app:app --reload
+stop:
+	@$(DOCKER_COMPOSE) down
+	@echo "Stopped all containers."
+
+clean:
+	@$(DOCKER) system prune -f
+	@rm -f $(MIGRATION_MARKER)
+	@echo "Cleaned up Docker system."
+
+help:
+	@echo "Available targets:"
+	@echo "  start-db      - Start the DB container"
+	@echo "  migrate-db    - Run DB DML migrations"
+	@echo "  build-api     - Build REST API Docker image"
+	@echo "  run-api       - Run REST API Docker container (skips migrations if already applied)"
+	@echo "  stop          - Stop all containers"
+	@echo "  clean         - Clean up Docker system"
