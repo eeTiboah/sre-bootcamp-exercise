@@ -3,6 +3,7 @@ DOCKER = docker
 IMAGE_NAME = sre-bootcamp-api
 IMAGE_TAG = 1.0.0
 MIGRATION_MARKER = .migrations-applied
+DOCKER_USERNAME = tibbsdocker
 
 start-db:
 	@$(DOCKER_COMPOSE) up -d db
@@ -14,7 +15,7 @@ migrate-db:
 	@echo "Database migrations applied."
 
 build-api:
-	@$(DOCKER) build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	@$(DOCKER) build -t $(DOCKER_USERNAME)/$(IMAGE_NAME):$(IMAGE_TAG) .
 	@echo "REST API Docker image built and tagged as $(IMAGE_NAME):$(IMAGE_TAG)."
 
 run-api:

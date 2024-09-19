@@ -21,7 +21,7 @@ jobs:
         #     python-version: "3.10"
 
                     
-        - name: Install dependencies
+        - name: Install dependencies and lint
           id: dependency
           run: |
             python3 -m venv venv 
@@ -30,17 +30,14 @@ jobs:
             python3 -m pip install --no-cache-dir psycopg2-binary
             python3 -m pip install --no-cache-dir -r requirements.txt
             python3 -m pip install flake8 flake8-bugbear flake8-black
-
-        - name: Flake8 Lint
-          run: |
             make lint
-
+            
         - name: Log in to Docker Hub
           run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       
 
         - name: Build Docker image
-          run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/sre-bootcamp-api:1.0.0 .
+          run: make build-api
 
         - name: Push Docker image
           run: docker push "${{ secrets.DOCKER_USERNAME }}"/sre-bootcamp-api:1.0.0
