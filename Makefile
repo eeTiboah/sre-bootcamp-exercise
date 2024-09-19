@@ -40,6 +40,9 @@ clean:
 	@rm -f $(MIGRATION_MARKER)
 	@echo "Cleaned up Docker system."
 
+lint:
+	flake8 --exclude __init__.py,__pycache__ --max-line-length 100 . || true
+
 help:
 	@echo "Available targets:"
 	@echo "  start-db      - Start the DB container"
@@ -48,3 +51,4 @@ help:
 	@echo "  run-api       - Run REST API Docker container (skips migrations if already applied)"
 	@echo "  stop          - Stop all containers"
 	@echo "  clean         - Clean up Docker system"
+	@echo "  lint		   - Run python linting"

@@ -4,19 +4,25 @@ from src.models.student import StudentInput, StudentUpdate
 from src.db.models import Student
 from sqlalchemy.orm import Session
 from src.core.exceptions import NotFoundError
+import logging
 
 router = APIRouter(tags=["Student"], prefix="/students")
 
 @router.get("/", status_code=status.HTTP_200_OK)
 def get_students(db: Session= Depends(get_db)):
+    logging.info("Getting all students")
     students = db.query(Student).all()
+    # logging.info(f"Response after getting all students -> {students}")
     return students
 
 @router.get("/{student_id}", status_code=status.HTTP_200_OK)
 def get_students(student_id: int, db: Session= Depends(get_db)):
     student = db.query(Student).filter(Student.id == student_id).first()
     if not student:
+        logging.info(f"Student with id {student_id} not found")
         raise NotFoundError(error_msg=f"Student with id {student_id} not found")
+    
+    logging.info(f"Response for specific student -> {student.first_name}")
     
     return student
 
@@ -27,6 +33,8 @@ def create_student(student: StudentInput, db: Session= Depends(get_db)):
     db.commit()
     db.refresh(new_student)
 
+    logging.info(f"Response after creating student -> {new_student}")
+
     return new_student
 
 @router.patch("/{student_id}", status_code=status.HTTP_200_OK)
@@ -34,6 +42,7 @@ def update_student(student_id: str, student_input: StudentUpdate, db: Session=De
     student = db.query(Student).filter(Student.id == student_id)
     student_in_db = student.first()
     if not student_in_db:
+        logging.info(f"Student with id {student_id} not found")
         raise NotFoundError(error_msg=f"Student with id {student_id} not found")
     student_dict = {
         "first_name": student_input.first_name,
@@ -46,6 +55,8 @@ def update_student(student_id: str, student_input: StudentUpdate, db: Session=De
 
     student_data = student.first()
 
+    logging.info(f"Response after updating student -> {student_data}")
+
     return student_data
 
 @router.delete("/{student_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -53,6 +64,7 @@ def delete_student(student_id: str, db: Session=Depends(get_db)):
     student = db.query(Student).filter(Student.id == student_id)
     student_in_db = student.first()
     if not student_in_db:
+        logging.info(f"Student with id {student_id} not found")
         raise NotFoundError(error_msg=f"Student with id {student_id} not found")
     student.delete()
     db.commit()
