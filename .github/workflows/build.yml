@@ -29,9 +29,9 @@ jobs:
           id: dependency
           run: |
             python3 -m pip install --upgrade pip
-            pip install --no-cache-dir psycopg2-binary
-            pip install --no-cache-dir -r requirements.txt
-            pip install flake8 flake8-bugbear flake8-black
+            python3 -m pip install --no-cache-dir psycopg2-binary
+            python3 -m pip install --no-cache-dir -r requirements.txt
+            python3 -m pip install flake8 flake8-bugbear flake8-black
 
         - name: Flake8 Lint
           run: |
