@@ -10,7 +10,7 @@ start-db:
 	@echo "Database container started."
 
 migrate-db:
-	@$(DOCKER_COMPOSE) run --rm app alembic upgrade head
+	@$(DOCKER_COMPOSE) run --rm app1 alembic upgrade head
 	@touch $(MIGRATION_MARKER)
 	@echo "Database migrations applied."
 
@@ -21,7 +21,7 @@ build-api:
 run-api:
 ifeq ($(wildcard $(MIGRATION_MARKER)),)
 	@echo "Migrations not applied. Running migrations first..."
-	@$(DOCKER_COMPOSE) run --rm app alembic upgrade head
+	@$(DOCKER_COMPOSE) run --rm app1 alembic upgrade head
 	@touch $(MIGRATION_MARKER)
 else
 	@echo "Migrations already applied. Skipping Alembic upgrade."
