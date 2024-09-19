@@ -12,7 +12,6 @@ router = APIRouter(tags=["Student"], prefix="/students")
 def get_students(db: Session= Depends(get_db)):
     logging.info("Getting all students")
     students = db.query(Student).all()
-    # logging.info(f"Response after getting all students -> {students}")
     return students
 
 @router.get("/{student_id}", status_code=status.HTTP_200_OK)
