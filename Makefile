@@ -26,7 +26,7 @@ ifeq ($(wildcard $(MIGRATION_MARKER)),)
 else
 	@echo "Migrations already applied. Skipping Alembic upgrade."
 endif
-	@$(DOCKER_COMPOSE) up -d app
+	@$(DOCKER_COMPOSE) up -d
 	@echo "REST API container started."
 
 start: start-db migrate-db run-api
@@ -50,6 +50,7 @@ help:
 	@echo "  migrate-db    - Run DB DML migrations"
 	@echo "  build-api     - Build REST API Docker image"
 	@echo "  run-api       - Run REST API Docker container (skips migrations if already applied)"
+	@echo "  start         - Start db, migrate db and run api containers"
 	@echo "  stop          - Stop all containers"
 	@echo "  clean         - Clean up Docker system"
 	@echo "  lint		   - Run python linting"
